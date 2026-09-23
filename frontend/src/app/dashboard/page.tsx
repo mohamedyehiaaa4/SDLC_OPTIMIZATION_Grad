@@ -15,7 +15,7 @@ export default function DashboardHomePage() {
     <div>
       <div className="mb-6 flex items-center justify-between rounded-xl2 border border-border-soft bg-surface px-7 py-6">
         <div>
-          <h2 className="text-[19px] font-semibold">Welcome back, Mohamed</h2>
+          <h2 className="text-[19px] font-semibold">Welcome back</h2>
           <p className="mt-1 text-[13.5px] text-ink-dim">
             Here&apos;s an overview of your workspace. Create a project to begin
             tracking requirements, design, implementation, and testing in one place.

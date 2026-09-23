@@ -3,7 +3,11 @@ import BrandMark from "@/components/BrandMark";
 import AuthForm from "@/components/marketing/AuthForm";
 import Velaris from "@/components/ui/velaris";
 
-export default function LoginPage() {
+export default function LoginPage({
+  searchParams,
+}: {
+  searchParams: { registered?: string };
+}) {
   return (
     <Velaris height="100vh" className="min-h-screen">
       <div className="flex min-h-screen flex-col">
@@ -16,7 +20,14 @@ export default function LoginPage() {
           </Link>
         </div>
         <div className="flex flex-1 items-center justify-center px-6 pb-16">
-          <AuthForm mode="login" />
+          <AuthForm
+            mode="login"
+            notice={
+              searchParams.registered
+                ? "Account created. Log in with your email and password."
+                : undefined
+            }
+          />
         </div>
       </div>
     </Velaris>
