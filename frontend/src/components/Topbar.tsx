@@ -1,7 +1,10 @@
 "use client";
 
-import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
 import { BellIcon } from "@/components/icons";
+import { ApiError } from "@/lib/api";
+import { getCurrentUser, logOut, type User } from "@/services/auth.service";
 
 const PAGES: Record<string, { title: string; subtitle: string }> = {
   "/dashboard": {
@@ -44,7 +47,30 @@ function pageFor(pathname: string) {
 
 export default function Topbar() {
   const pathname = usePathname();
+  const router = useRouter();
   const page = pageFor(pathname);
+  const [user, setUser] = useState<User | null>(null);
+
+  // Ask the backend who is logged in. If the session is gone (and could not be
+  // refreshed), clear the cookies and send the user to the login page.
+  useEffect(() => {
+    getCurrentUser()
+      .then(setUser)
+      .catch(async (error) => {
+        if (error instanceof ApiError && error.status === 401) {
+          await logOut();
+          router.replace("/login");
+        }
+      });
+  }, [router]);
+
+  async function handleLogOut() {
+    await logOut();
+    router.push("/login");
+  }
+
+  const name = user?.name ?? "";
+  const email = user?.email ?? "";
 
   return (
     <header className="flex h-[68px] shrink-0 items-center justify-between border-b border-border-soft bg-bg px-7">
@@ -65,13 +91,20 @@ export default function Topbar() {
         </button>
         <div className="flex items-center gap-2.5 rounded-lg border border-border-soft bg-surface py-1.5 pl-1.5 pr-3">
           <div className="flex h-[28px] w-[28px] items-center justify-center rounded-full bg-accent text-[12px] font-bold text-white">
-            M
+            {name.charAt(0).toUpperCase()}
           </div>
           <div className="flex flex-col leading-tight">
-            <span className="text-[12.5px] font-semibold">Mohamed Yehia</span>
-            <span className="text-[10.5px] text-ink-faint">Workspace Admin</span>
+            <span className="text-[12.5px] font-semibold">{name}</span>
+            <span className="text-[10.5px] text-ink-faint">{email}</span>
           </div>
         </div>
+        <button
+          type="button"
+          onClick={handleLogOut}
+          className="rounded-lg border border-border-soft bg-surface px-3 py-1.5 text-[12.5px] text-ink-dim hover:bg-surface2 hover:text-ink"
+        >
+          Log out
+        </button>
       </div>
     </header>
   );

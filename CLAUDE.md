@@ -6,7 +6,32 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Repository state
 
-This is a graduation project ("RepoMind": a repository-intelligent AI platform for SDLC assistance) in its **pre-implementation** stage. There is no source code, build system, or test suite yet, so there are no build/lint/test commands. Update this file with real commands once a stack is chosen and scaffolded.
+This is a graduation project ("RepoMind": a repository-intelligent AI platform for SDLC assistance).
+
+- `frontend/`: Next.js 14 (App Router) + TypeScript + Tailwind. **UI only**: it never calls Supabase directly.
+- `backend/`: FastAPI. Owns all logic (auth now; planning features next). One package per feature (`app/auth/`: `router.py`, `service.py`, `schemas.py`); shared setup in `app/core/`.
+- `phase1_schema.sql`: the Supabase/PostgreSQL schema, applied once in the Supabase SQL Editor. It relies on Supabase's `auth` schema, so it does not run on plain PostgreSQL.
+- One `.env` (git-ignored), one `.env.example` and one `requirements.txt`, all at the **repository root**, shared by frontend and backend.
+
+## Commands
+
+```bash
+# Backend (from repo root, once): python -m venv .venv && .venv\Scripts\pip install -r requirements.txt
+cd backend && ..\.venv\Scripts\uvicorn app.main:app --reload --port 8000
+.venv\Scripts\ruff check backend && .venv\Scripts\ruff format backend
+
+# Frontend
+cd frontend && npm install && npm run dev      # http://localhost:3000
+npm run lint
+```
+
+`npm run build` currently fails on pre-existing type errors in `src/components/ui/hero.tsx`.
+
+## How the frontend and backend connect
+
+- The browser only calls `/api/*`. `frontend/next.config.mjs` rewrites it to `BACKEND_URL`, so requests are same-origin and no CORS is needed. `next.config.mjs` also loads the root `.env` (with `forceReload`, because Next caches env files from `frontend/`).
+- Browser calls live in `frontend/src/services/*.service.ts` via `src/lib/api.ts`. Components only render and call services.
+- Auth is intentionally minimal: `POST /auth/signup` saves the credentials through Supabase Auth (the `on_auth_user_created` trigger copies name/email into `public.users`), and `POST /auth/login` checks them. There are no sessions, tokens or route guards. After a successful login, the frontend keeps `{id, name, email}` in `localStorage` only to display the user. Supabase's "Confirm email" setting must be off, or login fails until the user confirms.
 
 The authoritative spec for the current work is `phase_1_planning_requirements_final_latest.md` (Phase 1: Planning and Requirements). Read it before designing or implementing anything in Phase 1. Per `AGENTS.md`, it is a private planning document: do not commit it, and do not copy its detailed requirements into tracked files (including this one).
 
