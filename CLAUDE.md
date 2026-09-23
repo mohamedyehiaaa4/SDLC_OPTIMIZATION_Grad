@@ -9,7 +9,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 This is a graduation project ("RepoMind": a repository-intelligent AI platform for SDLC assistance).
 
 - `frontend/`: Next.js 14 (App Router) + TypeScript + Tailwind. **UI only**: it never calls Supabase directly.
-- `backend/`: FastAPI. Owns all logic (auth now; planning features next). One package per feature (`app/auth/`: `router.py`, `service.py`, `schemas.py`); shared setup in `app/core/`.
+- `backend/`: FastAPI. Owns all logic (auth now; planning features next). One package per feature (`app/auth/`: `router.py`, `service.py`, `schemas.py`, `cookies.py`, `dependencies.py`); shared setup in `app/core/`.
 - `phase1_schema.sql`: the Supabase/PostgreSQL schema, applied once in the Supabase SQL Editor. It relies on Supabase's `auth` schema, so it does not run on plain PostgreSQL.
 - One `.env` (git-ignored), one `.env.example` and one `requirements.txt`, all at the **repository root**, shared by frontend and backend.
 
@@ -31,7 +31,19 @@ npm run lint
 
 - The browser only calls `/api/*`. `frontend/next.config.mjs` rewrites it to `BACKEND_URL`, so requests are same-origin and no CORS is needed. `next.config.mjs` also loads the root `.env` (with `forceReload`, because Next caches env files from `frontend/`).
 - Browser calls live in `frontend/src/services/*.service.ts` via `src/lib/api.ts`. Components only render and call services.
-- Auth is intentionally minimal: `POST /auth/signup` saves the credentials through Supabase Auth (the `on_auth_user_created` trigger copies name/email into `public.users`), and `POST /auth/login` checks them. There are no sessions, tokens or route guards. After a successful login, the frontend keeps `{id, name, email}` in `localStorage` only to display the user. Supabase's "Confirm email" setting must be off, or login fails until the user confirms.
+- Backend errors always come back as one readable sentence in `detail` (handlers for `AuthError` and `RequestValidationError` in `backend/app/main.py`), and `apiRequest` throws it as `ApiError(message, status)`.
+
+## Auth
+
+- Credentials live in Supabase Auth (`auth.users`, password hashed). The `on_auth_user_created` trigger copies name and email into `public.users`. Supabase's "Confirm email" setting should be off; otherwise login returns 403 until the user confirms.
+- Endpoints (`backend/app/auth/router.py`): `POST /auth/signup` (201, no session: the user is sent to `/login?registered=1`), `POST /auth/login`, `POST /auth/refresh`, `POST /auth/logout` (204), `GET /auth/me`.
+- The session is two httpOnly cookies set by the backend (`backend/app/auth/cookies.py`): `repomind_access` (expires with the Supabase access token) and `repomind_refresh` (30 days). Nothing about the user is stored in the browser. Set `COOKIE_SECURE=true` in production.
+- Protect a backend route with `Depends(get_current_user)` (`backend/app/auth/dependencies.py`). It reads the access cookie and has Supabase validate it.
+- Input rules are in `backend/app/auth/schemas.py`: email is trimmed and lowercased, and the signup password needs 8+ characters with a letter and a number. `AuthForm.tsx` mirrors these rules for instant feedback, but the backend is the authority.
+- Frontend:
+  - `src/lib/api.ts`: on a 401, calls `/auth/refresh` once (shared between concurrent requests) and retries. It skips this for the login, signup, refresh and logout paths.
+  - `src/middleware.ts`: only checks that a cookie *exists*. It redirects `/dashboard` to `/login` when neither cookie is present, and `/login` or `/signup` to `/dashboard` when the access cookie is present. The cookie names there must match `cookies.py`.
+  - `Topbar.tsx` loads the user from `/auth/me`. If that still returns 401 after the refresh attempt, it logs out and sends the user to `/login`.
 
 The authoritative spec for the current work is `phase_1_planning_requirements_final_latest.md` (Phase 1: Planning and Requirements). Read it before designing or implementing anything in Phase 1. Per `AGENTS.md`, it is a private planning document: do not commit it, and do not copy its detailed requirements into tracked files (including this one).
 
