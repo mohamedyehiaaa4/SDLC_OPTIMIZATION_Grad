@@ -1,0 +1,32 @@
+# RepoMind backend (Python >= 3.10)
+# Install: pip install -r requirements.txt
+
+# --- API server ---
+fastapi==0.141.1
+uvicorn[standard]==0.53.0
+python-multipart==0.0.32          # form / file uploads
+
+# --- Config and validation ---
+pydantic==2.13.5
+pydantic-settings==2.15.0         # typed settings loaded from .env
+python-dotenv==1.2.3
+
+# --- Database (Supabase / PostgreSQL) ---
+supabase==2.31.0                  # Supabase client: auth checks, data API
+psycopg[binary]==3.3.6            # direct PostgreSQL connection (transactions, triggers)
+psycopg-pool==3.3.3
+
+# --- AI agents and workflow ---
+langgraph==1.2.12                 # Planning Orchestrator workflow
+langgraph-checkpoint-postgres==3.1.2  # saves workflow state in Postgres
+langchain-core==1.6.4
+langchain-openai==1.6.4
+openai==3.19.0
+
+# --- External integrations (Jira REST API) ---
+httpx==0.28.1
+
+# --- Development and testing ---
+pytest==9.1.1
+pytest-asyncio==1.4.0
+ruff==0.16.8                      # linter + formatter
