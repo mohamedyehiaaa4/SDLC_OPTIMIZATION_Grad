@@ -1,0 +1,82 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  background-color: #0a0b10;
+  color: #eef0f7;
+}
+
+/* thin scrollbars to match the dark UI */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #262b3a transparent;
+}
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+*::-webkit-scrollbar-thumb {
+  background-color: #262b3a;
+  border-radius: 999px;
+}
+
+/* ---- motion: scroll reveal + hero ambience ---- */
+@keyframes reveal-up {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+[data-reveal] {
+  opacity: 0;
+}
+[data-reveal="in"] {
+  animation: reveal-up 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes drift {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(-2%, 3%) scale(1.05);
+  }
+}
+.animate-drift {
+  animation: drift 14s ease-in-out infinite;
+}
+
+@keyframes soft-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.45;
+  }
+}
+.animate-soft-pulse {
+  animation: soft-pulse 1.8s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal] {
+    opacity: 1;
+    animation: none !important;
+  }
+  .animate-drift,
+  .animate-soft-pulse {
+    animation: none !important;
+  }
+}
