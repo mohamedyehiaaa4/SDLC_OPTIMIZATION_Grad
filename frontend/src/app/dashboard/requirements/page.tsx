@@ -1,15 +1,15 @@
-import Panel from "@/components/Panel";
-import StageTabs from "@/components/StageTabs";
-import StatCard from "@/components/StatCard";
-import StatusPill from "@/components/StatusPill";
-import { EmptyInline } from "@/components/EmptyState";
+import Panel from "@/components/ui/Panel";
+import StageTabs from "@/components/dashboard/StageTabs";
+import StatCard from "@/components/ui/StatCard";
+import StatusPill from "@/components/ui/StatusPill";
+import { EmptyInline } from "@/components/ui/EmptyState";
 import {
   TestingIcon as CheckIcon,
   DocIcon,
   LayersIcon,
   SparklesIcon,
   SprintIcon,
-} from "@/components/icons";
+} from "@/components/ui/icons";
 
 function RequirementsDashboard() {
   return (

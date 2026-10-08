@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { CommandIcon, PaperclipIcon, SendIcon } from "@/components/icons";
+import { CommandIcon, PaperclipIcon, SendIcon } from "@/components/ui/icons";
 
 export interface ChatSuggestion {
   icon: ReactNode;

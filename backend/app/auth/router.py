@@ -1,3 +1,5 @@
+from typing import Annotated
+
 from fastapi import APIRouter, Cookie, Depends, Response
 
 from app.auth import service
@@ -45,5 +47,5 @@ def logout() -> Response:
 
 
 @router.get("/me", response_model=UserOut)
-def me(user: UserOut = Depends(get_current_user)) -> UserOut:
+def me(user: Annotated[UserOut, Depends(get_current_user)]) -> UserOut:
     return user

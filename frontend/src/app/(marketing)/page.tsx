@@ -3,11 +3,11 @@ import {
   DesignIcon,
   DocIcon,
   TestingIcon,
-} from "@/components/icons";
+} from "@/components/ui/icons";
 import Footer from "@/components/marketing/Footer";
 import Reveal from "@/components/marketing/Reveal";
 import StageCycler from "@/components/marketing/StageCycler";
-import ShaderHero from "@/components/ui/hero";
+import ShaderHero from "@/components/marketing/Hero";
 
 const stages = [
   {

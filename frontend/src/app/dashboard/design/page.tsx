@@ -1,15 +1,15 @@
-import StageTabs from "@/components/StageTabs";
-import StatCard from "@/components/StatCard";
-import StatusPill from "@/components/StatusPill";
-import SubTabs from "@/components/SubTabs";
-import Panel from "@/components/Panel";
+import StageTabs from "@/components/dashboard/StageTabs";
+import StatCard from "@/components/ui/StatCard";
+import StatusPill from "@/components/ui/StatusPill";
+import SubTabs from "@/components/ui/SubTabs";
+import Panel from "@/components/ui/Panel";
 import {
   ChartIcon,
   DesignIcon,
   DocIcon,
   LayersIcon,
   TestingIcon as ApprovedIcon,
-} from "@/components/icons";
+} from "@/components/ui/icons";
 
 function DesignDashboard() {
   return (

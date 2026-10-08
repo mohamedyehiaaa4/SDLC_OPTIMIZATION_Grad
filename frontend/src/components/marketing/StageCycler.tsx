@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { CodeIcon, DesignIcon, DocIcon, TestingIcon } from "@/components/icons";
+import { CodeIcon, DesignIcon, DocIcon, TestingIcon } from "@/components/ui/icons";
 
 const stages = [
   {

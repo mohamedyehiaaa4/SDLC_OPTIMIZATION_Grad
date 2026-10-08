@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, type ReactNode } from "react";
-import ChatPanel, { type ChatSuggestion } from "@/components/ChatPanel";
-import StatusPill from "@/components/StatusPill";
+import ChatPanel, { type ChatSuggestion } from "@/components/dashboard/ChatPanel";
+import StatusPill from "@/components/ui/StatusPill";
 
 export default function StageTabs({
   chatTitle,

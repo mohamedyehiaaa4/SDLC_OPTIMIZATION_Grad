@@ -1,4 +1,4 @@
-import BrandMark from "@/components/BrandMark";
+import BrandMark from "@/components/ui/BrandMark";
 
 export default function Footer() {
   return (

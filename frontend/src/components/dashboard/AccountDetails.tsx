@@ -1,17 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { getCurrentUser, type User } from "@/services/auth.service";
+import { useCurrentUser } from "@/components/dashboard/CurrentUserProvider";
 
 export default function AccountDetails() {
-  const [user, setUser] = useState<User | null>(null);
-
-  // If the session is gone, the Topbar sends the user back to the login page.
-  useEffect(() => {
-    getCurrentUser()
-      .then(setUser)
-      .catch(() => setUser(null));
-  }, []);
+  const user = useCurrentUser();
 
   return (
     <table className="w-full border-collapse text-[13px]">

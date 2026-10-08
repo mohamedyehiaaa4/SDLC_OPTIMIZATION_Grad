@@ -8,14 +8,12 @@ from supabase_auth.errors import AuthApiError
 from supabase_auth.types import User
 
 from app.auth.schemas import UserOut
+from app.core.errors import AppError
 from app.core.supabase import create_supabase
 
 
-class AuthError(Exception):
-    def __init__(self, message: str, status_code: int = 400):
-        super().__init__(message)
-        self.message = message
-        self.status_code = status_code
+class AuthError(AppError):
+    pass
 
 
 @dataclass
@@ -33,7 +31,10 @@ def _to_user_out(user: User) -> UserOut:
 def _signup_error(error: AuthApiError) -> AuthError:
     code = getattr(error, "code", None)
     message = (error.message or "").lower()
-    if code in ("user_already_exists", "email_exists") or "already registered" in message:
+    if (
+        code in ("user_already_exists", "email_exists")
+        or "already registered" in message
+    ):
         return AuthError("An account with this email already exists.", 409)
     if code == "over_email_send_rate_limit" or "rate limit" in message:
         return AuthError(
@@ -41,7 +42,9 @@ def _signup_error(error: AuthApiError) -> AuthError:
             429,
         )
     if code == "weak_password":
-        return AuthError("This password is too weak. Please choose a stronger one.", 422)
+        return AuthError(
+            "This password is too weak. Please choose a stronger one.", 422
+        )
     return AuthError(error.message or "Could not create the account.")
 
 
@@ -78,9 +81,13 @@ def log_in(email: str, password: str) -> tuple[UserOut, AuthTokens]:
     except AuthApiError as error:
         code = getattr(error, "code", None)
         if code == "email_not_confirmed":
-            raise AuthError("Please confirm your email before logging in.", 403) from error
+            raise AuthError(
+                "Please confirm your email before logging in.", 403
+            ) from error
         if code == "over_request_rate_limit":
-            raise AuthError("Too many attempts. Please wait a moment and try again.", 429) from error
+            raise AuthError(
+                "Too many attempts. Please wait a moment and try again.", 429
+            ) from error
         raise AuthError("Incorrect email or password.", 401) from error
     if result.user is None or result.session is None:
         raise AuthError("Incorrect email or password.", 401)
@@ -93,7 +100,9 @@ def get_user_from_token(access_token: str) -> UserOut:
     try:
         result = client.auth.get_user(access_token)
     except AuthApiError as error:
-        raise AuthError("Your session has expired. Please log in again.", 401) from error
+        raise AuthError(
+            "Your session has expired. Please log in again.", 401
+        ) from error
     if result is None or result.user is None:
         raise AuthError("Your session has expired. Please log in again.", 401)
     return _to_user_out(result.user)
@@ -104,7 +113,9 @@ def refresh(refresh_token: str) -> tuple[UserOut, AuthTokens]:
     try:
         result = client.auth.refresh_session(refresh_token)
     except AuthApiError as error:
-        raise AuthError("Your session has expired. Please log in again.", 401) from error
+        raise AuthError(
+            "Your session has expired. Please log in again.", 401
+        ) from error
     if result.user is None or result.session is None:
         raise AuthError("Your session has expired. Please log in again.", 401)
     return _to_user_out(result.user), _tokens_from(result.session)

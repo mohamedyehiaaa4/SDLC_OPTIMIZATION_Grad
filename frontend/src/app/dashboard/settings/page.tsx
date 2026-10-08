@@ -1,7 +1,7 @@
-import Panel from "@/components/Panel";
-import { EmptyInline } from "@/components/EmptyState";
-import { SettingsIcon } from "@/components/icons";
-import AccountDetails from "@/components/AccountDetails";
+import Panel from "@/components/ui/Panel";
+import { EmptyInline } from "@/components/ui/EmptyState";
+import { SettingsIcon } from "@/components/ui/icons";
+import AccountDetails from "@/components/dashboard/AccountDetails";
 
 export default function SettingsPage() {
   return (

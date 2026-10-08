@@ -3,29 +3,8 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { SVGProps } from "react";
-import BrandMark from "@/components/BrandMark";
-import {
-  CodeIcon,
-  DesignIcon,
-  DocIcon,
-  FolderIcon,
-  HomeIcon,
-  SettingsIcon,
-  TestingIcon,
-} from "@/components/icons";
-
-const topNavItems = [
-  { href: "/dashboard", label: "Home", icon: HomeIcon },
-  { href: "/dashboard/requirements", label: "Requirements", icon: DocIcon },
-  { href: "/dashboard/design", label: "Design", icon: DesignIcon },
-  { href: "/dashboard/implementation", label: "Implementation", icon: CodeIcon },
-  { href: "/dashboard/testing", label: "Testing", icon: TestingIcon },
-];
-
-const bottomNavItems = [
-  { href: "/dashboard/projects", label: "Projects", icon: FolderIcon },
-  { href: "/dashboard/settings", label: "Settings", icon: SettingsIcon },
-];
+import BrandMark from "@/components/ui/BrandMark";
+import { NAV_ITEMS, isActive } from "@/components/dashboard/nav";
 
 function NavLink({
   href,
@@ -58,9 +37,6 @@ function NavLink({
 export default function Sidebar() {
   const pathname = usePathname();
 
-  const isActive = (href: string) =>
-    href === "/dashboard" ? pathname === "/dashboard" : pathname.startsWith(href);
-
   return (
     <aside className="flex w-[232px] shrink-0 flex-col border-r border-border-soft bg-surface p-3.5">
       <div className="flex items-center gap-2.5 px-2 pb-[22px] pt-1">
@@ -75,25 +51,25 @@ export default function Sidebar() {
 
       <nav className="flex flex-1 flex-col justify-between">
         <div className="flex flex-col gap-0.5">
-          {topNavItems.map((item) => (
+          {NAV_ITEMS.filter((item) => item.group === "top").map((item) => (
             <NavLink
               key={item.href}
               href={item.href}
               label={item.label}
               Icon={item.icon}
-              active={isActive(item.href)}
+              active={isActive(pathname, item.href)}
             />
           ))}
         </div>
 
         <div className="mt-2.5 flex flex-col gap-0.5 border-t border-border-soft pt-2.5">
-          {bottomNavItems.map((item) => (
+          {NAV_ITEMS.filter((item) => item.group === "bottom").map((item) => (
             <NavLink
               key={item.href}
               href={item.href}
               label={item.label}
               Icon={item.icon}
-              active={isActive(item.href)}
+              active={isActive(pathname, item.href)}
             />
           ))}
           <Link

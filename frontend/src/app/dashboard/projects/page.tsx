@@ -1,6 +1,6 @@
-import Button from "@/components/Button";
-import { EmptyState } from "@/components/EmptyState";
-import { FolderIcon, PlusIcon } from "@/components/icons";
+import Button from "@/components/ui/Button";
+import { EmptyState } from "@/components/ui/EmptyState";
+import { FolderIcon, PlusIcon } from "@/components/ui/icons";
 
 export default function ProjectsPage() {
   return (

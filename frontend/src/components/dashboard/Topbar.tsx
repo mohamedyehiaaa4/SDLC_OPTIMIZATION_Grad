@@ -1,68 +1,21 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { BellIcon } from "@/components/icons";
-import { ApiError } from "@/lib/api";
-import { getCurrentUser, logOut, type User } from "@/services/auth.service";
-
-const PAGES: Record<string, { title: string; subtitle: string }> = {
-  "/dashboard": {
-    title: "Home",
-    subtitle: "Overview of your workspace and projects",
-  },
-  "/dashboard/requirements": {
-    title: "Requirements",
-    subtitle: "Product requirements, user stories, and sprint planning",
-  },
-  "/dashboard/design": {
-    title: "Design",
-    subtitle: "System architecture and design decisions",
-  },
-  "/dashboard/implementation": {
-    title: "Implementation",
-    subtitle: "User stories, commits, and pull requests",
-  },
-  "/dashboard/testing": {
-    title: "Testing",
-    subtitle: "Test runs, coverage, and quality trends",
-  },
-  "/dashboard/projects": {
-    title: "Projects",
-    subtitle: "All projects connected to your workspace",
-  },
-  "/dashboard/settings": {
-    title: "Settings",
-    subtitle: "Account and integration preferences",
-  },
-};
+import { useCurrentUser } from "@/components/dashboard/CurrentUserProvider";
+import { NAV_ITEMS, isActive } from "@/components/dashboard/nav";
+import { BellIcon } from "@/components/ui/icons";
+import { logOut } from "@/services/auth.service";
 
 function pageFor(pathname: string) {
-  if (PAGES[pathname]) return PAGES[pathname];
-  const match = Object.keys(PAGES).find(
-    (key) => key !== "/dashboard" && pathname.startsWith(key)
-  );
-  return match ? PAGES[match] : { title: "RepoMind", subtitle: "" };
+  const item = NAV_ITEMS.find((item) => isActive(pathname, item.href));
+  return item ? { title: item.label, subtitle: item.subtitle } : { title: "RepoMind", subtitle: "" };
 }
 
 export default function Topbar() {
   const pathname = usePathname();
   const router = useRouter();
   const page = pageFor(pathname);
-  const [user, setUser] = useState<User | null>(null);
-
-  // Ask the backend who is logged in. If the session is gone (and could not be
-  // refreshed), clear the cookies and send the user to the login page.
-  useEffect(() => {
-    getCurrentUser()
-      .then(setUser)
-      .catch(async (error) => {
-        if (error instanceof ApiError && error.status === 401) {
-          await logOut();
-          router.replace("/login");
-        }
-      });
-  }, [router]);
+  const user = useCurrentUser();
 
   async function handleLogOut() {
     await logOut();

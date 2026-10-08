@@ -1,42 +1,30 @@
-# RepoMind — Frontend Prototype
+# RepoMind — Frontend
 
-A front-end-only prototype of the RepoMind UI, built with **Next.js (App Router), React, TypeScript, and Tailwind CSS**. There is no backend: auth is a mock form that redirects into the dashboard, and every dashboard list starts empty since no real projects exist.
-
-## Site structure
-
-**Marketing (public)** — dark, Kiro-style landing site with its own nav/footer:
-- `/` — landing page: hero, product preview, the four SDLC stages, "how it works", closing CTA
-- `/login`, `/signup` — centered auth cards ("Continue with GitHub" + email/password). Either form just pushes you to `/dashboard` — there's no real account system yet.
-
-**Dashboard (app)** — the formal, sidebar-driven workspace, gated behind the marketing site's sign in/up:
-- `/dashboard` — workspace overview: welcome banner, summary stat row, empty projects list
-- `/dashboard/requirements`, `/dashboard/design`, `/dashboard/implementation`, `/dashboard/testing` — each has an **AI Chat** tab (greeting only, input disabled) and a **Dashboard** tab (zeroed stats, empty tables/panels)
-- `/dashboard/projects` — empty project list
-- `/dashboard/settings` — account info + empty integrations panel
-
-The dashboard topbar now shows a page title *and* subtitle (breadcrumb-style), and the user chip/avatar use a flat, single accent color instead of the previous purple gradient — meant to read as a more formal, enterprise product surface than the original mockup.
-
-## Run it locally
-
-This sandbox's npm registry access is blocked by org policy, so the dependencies couldn't be installed or build-verified here — the code was written and type-checked by hand instead (against the real `tsc` compiler with stubbed `next`/`react` types). On your own machine:
-
-```bash
-npm install
-npm run dev
-```
-
-Then open http://localhost:3000.
+Next.js (App Router), React, TypeScript and Tailwind CSS. The frontend is UI only: it calls the FastAPI backend through `/api/*` (proxied in `next.config.mjs`) and never talks to Supabase directly. See the root `README.md` to run the project.
 
 ## Structure
 
 ```
 src/
   app/
-    (marketing)/         # landing, /login, /signup — public site, own layout
+    (marketing)/         # public landing page
+    (auth)/              # /login, /signup — share one layout (shader background + logo)
     dashboard/           # sidebar + topbar app shell, one folder per route
   components/
-    marketing/           # Navbar, Footer, AuthForm (mock sign in/up)
-    ...                  # Sidebar, Topbar, StageTabs, ChatPanel, StatCard, etc.
+    ui/                  # shared building blocks: Button, Panel, StatCard, icons, BrandMark...
+    auth/                # AuthForm, Velaris background
+    dashboard/           # Sidebar, Topbar, StageTabs, ChatPanel, AccountDetails
+      nav.ts             # the list of dashboard pages (sidebar links + topbar titles)
+      CurrentUserProvider.tsx  # loads the logged-in user once; read it with useCurrentUser()
+    marketing/           # Hero, Footer, Reveal, StageCycler
+  services/              # one file per backend feature (auth.service.ts), built on lib/api.ts
+  lib/                   # api.ts (fetch wrapper), utils.ts
+  middleware.ts          # redirects /dashboard <-> /login based on the session cookies
 ```
 
-`StageTabs` is the shared client component powering the AI Chat / Dashboard toggle on the four SDLC-stage pages. `AuthForm` is the shared client component behind both `/login` and `/signup`.
+## Adding a feature
+
+1. Backend: add `backend/app/<feature>/` (`router.py`, `service.py`, `schemas.py`), raise `AppError` for user-facing errors, and include the router in `backend/app/main.py`.
+2. Frontend: add `src/services/<feature>.service.ts` calling `apiRequest`.
+3. Add the page under `src/app/dashboard/<feature>/` and one entry in `components/dashboard/nav.ts`.
+4. Components render and call the service; the current user comes from `useCurrentUser()`.

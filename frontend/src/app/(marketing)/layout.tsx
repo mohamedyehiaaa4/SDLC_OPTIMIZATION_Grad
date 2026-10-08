@@ -1,7 +1,6 @@
-// The homepage's hero (src/components/ui/hero.tsx) ships its own header/nav,
-// and the login/signup pages are immersive full-screen shader backgrounds
-// with their own minimal logo — so no shared chrome is rendered here. The
-// homepage renders its own Footer directly (see (marketing)/page.tsx).
+// The homepage's hero (src/components/marketing/Hero.tsx) ships its own
+// header/nav and the page renders its own Footer, so no shared chrome here.
+// Login and signup have their own layout in app/(auth)/.
 export default function MarketingLayout({
   children,
 }: {

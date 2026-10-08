@@ -46,7 +46,9 @@ class SignupRequest(BaseModel):
                 f"Password must be at least {PASSWORD_MIN_LENGTH} characters."
             )
         if not re.search(r"[A-Za-z]", value) or not re.search(r"\d", value):
-            raise ValueError("Password must contain at least one letter and one number.")
+            raise ValueError(
+                "Password must contain at least one letter and one number."
+            )
         return value
 
 

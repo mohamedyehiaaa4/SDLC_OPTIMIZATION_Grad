@@ -1,6 +1,6 @@
-import Button from "@/components/Button";
-import StatCard from "@/components/StatCard";
-import { EmptyState } from "@/components/EmptyState";
+import Button from "@/components/ui/Button";
+import StatCard from "@/components/ui/StatCard";
+import { EmptyState } from "@/components/ui/EmptyState";
 import {
   ChartIcon,
   FolderIcon,
@@ -8,7 +8,7 @@ import {
   PlusIcon,
   SearchIcon,
   TestingIcon,
-} from "@/components/icons";
+} from "@/components/ui/icons";
 
 export default function DashboardHomePage() {
   return (

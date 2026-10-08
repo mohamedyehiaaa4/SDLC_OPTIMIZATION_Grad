@@ -5,7 +5,7 @@ import Link from "next/link";
 import { MeshGradient, PulsingBorder } from "@paper-design/shaders-react";
 import { motion } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
-import BrandMark from "@/components/BrandMark";
+import BrandMark from "@/components/ui/BrandMark";
 
 // Shader colors live here as literal hex (WebGL uniforms can't read CSS
 // variables) — this is the one place to edit when the brand palette changes.
@@ -58,14 +58,12 @@ export default function ShaderHero() {
         className="absolute inset-0 h-full w-full"
         colors={MESH_COLORS}
         speed={0.3}
-        backgroundColor="#0a0b10"
+        style={{ backgroundColor: "#0a0b10" }}
       />
       <MeshGradient
         className="absolute inset-0 h-full w-full opacity-40"
         colors={MESH_COLORS_WIREFRAME}
         speed={0.2}
-        wireframe="true"
-        backgroundColor="transparent"
       />
 
       <header className="relative z-20 flex items-center justify-between border-b border-white/10 bg-black/15 px-6 py-5 backdrop-blur-sm md:px-10">

@@ -1,10 +1,10 @@
-import StageTabs from "@/components/StageTabs";
-import StatCard from "@/components/StatCard";
-import StatusPill from "@/components/StatusPill";
-import SubTabs from "@/components/SubTabs";
-import Panel from "@/components/Panel";
-import { EmptyInline } from "@/components/EmptyState";
-import { ChartIcon, DocIcon, SprintIcon, TestingIcon } from "@/components/icons";
+import StageTabs from "@/components/dashboard/StageTabs";
+import StatCard from "@/components/ui/StatCard";
+import StatusPill from "@/components/ui/StatusPill";
+import SubTabs from "@/components/ui/SubTabs";
+import Panel from "@/components/ui/Panel";
+import { EmptyInline } from "@/components/ui/EmptyState";
+import { ChartIcon, DocIcon, SprintIcon, TestingIcon } from "@/components/ui/icons";
 
 const COLUMNS = ["Test Suite", "Passed", "Failed", "Coverage"];
 
